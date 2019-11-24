@@ -43,7 +43,7 @@ module PRNG: IPRNG = {
   };
 
   let list_of_random_256_bits = length => {
-    List.init(length, __random);
+    MerkleTrees.Helpers.List.init(~len=length, ~f=__random);
   };
 };
 

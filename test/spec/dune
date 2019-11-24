@@ -1,0 +1,4 @@
+(test
+ (name Spec)
+ (modules Spec)
+ (libraries alcotest Support))

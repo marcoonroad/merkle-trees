@@ -1,0 +1,7 @@
+(test
+ (name Bench)
+ (modules Bench)
+ (libraries core_bench core Support)
+ (action (run %{test}
+    -all-values -fork -no-compactions -overheads -stabilize-gc -v
+    -width 300 -display tall)))

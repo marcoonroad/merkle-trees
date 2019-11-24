@@ -127,3 +127,6 @@ module Make: ITreeBuilder =
       root == Hash.digest(traversal);
     };
   };
+
+module Helpers = Helpers;
+
