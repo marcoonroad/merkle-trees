@@ -21,6 +21,8 @@
   },
   "scripts": {
     "clean": "esy dune clean",
+    "lint-fmt": "esy dune build @fmt",
+    "fmt": "esy dune build @fmt --auto-promote",
     "test": "esy dune runtest --force --no-buffer -j 1",
     "doc": "esy dune build @doc",
     "open-doc": "gnome-open '#{self.target_dir}/default/_doc/_html/index.html'"

@@ -10,48 +10,47 @@ let power_of_two = number => {
 };
 
 let generate = height => {
-  let length = power_of_two (height);
-  let leaves = PRNG.list_of_random_256_bits (length);
+  let length = power_of_two(height);
+  let leaves = PRNG.list_of_random_256_bits(length);
   let case = () => {
-    ignore (Merkle.tree (leaves));
+    ignore(Merkle.tree(leaves));
   };
-  let name = "tree-generation:sha256 | height = " ++ string_of_int (height);
-  Test.create (case, ~name);
+  let name = "tree-generation:sha256 | height = " ++ string_of_int(height);
+  Test.create(case, ~name);
 };
 
 let compute = height => {
-  let length = power_of_two (height);
-  let leaves = PRNG.list_of_random_256_bits (length);
-  let tree = Merkle.tree (leaves);
-  let index = PRNG.random_int (length);
-  let leaf = List.nth (leaves, index);
+  let length = power_of_two(height);
+  let leaves = PRNG.list_of_random_256_bits(length);
+  let tree = Merkle.tree(leaves);
+  let index = PRNG.random_int(length);
+  let leaf = List.nth(leaves, index);
   let case = () => {
-    ignore (Merkle.path (~tree, ~leaf));
+    ignore(Merkle.path(~tree, ~leaf));
   };
-  let name = "path-computation:sha256 | height = " ++ string_of_int (height);
-  Test.create (case, ~name);
+  let name = "path-computation:sha256 | height = " ++ string_of_int(height);
+  Test.create(case, ~name);
 };
 
 let verify = height => {
-  let length = power_of_two (height);
-  let leaves = PRNG.list_of_random_256_bits (length);
-  let tree = Merkle.tree (leaves);
-  let index = PRNG.random_int (length);
-  let leaf = List.nth (leaves, index);
-  let path = Merkle.path (~tree, ~leaf);
-  let root = Merkle.root (tree);
+  let length = power_of_two(height);
+  let leaves = PRNG.list_of_random_256_bits(length);
+  let tree = Merkle.tree(leaves);
+  let index = PRNG.random_int(length);
+  let leaf = List.nth(leaves, index);
+  let path = Merkle.path(~tree, ~leaf);
+  let root = Merkle.root(tree);
   let case = () => {
-    assert (Merkle.verify (~root, ~leaf, ~path));
+    assert(Merkle.verify(~root, ~leaf, ~path));
   };
-  let name = "path-verification:sha256 | height = " ++ string_of_int (height);
-  Test.create (case, ~name);
+  let name = "path-verification:sha256 | height = " ++ string_of_int(height);
+  Test.create(case, ~name);
 };
 
-let generations = List.map (generate, heights);
-let computations = List.map (compute, heights);
-let verifications = List.map (verify, heights);
+let generations = List.map(generate, heights);
+let computations = List.map(compute, heights);
+let verifications = List.map(verify, heights);
 
 let suite = generations @ computations @ verifications;
 
-Command.run (make_command (suite));
-
+Command.run(make_command(suite));
