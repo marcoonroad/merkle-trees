@@ -31,6 +31,8 @@
     "@opam/merlin": "*",
     "ocaml": "~4.8.1000",
     "@opam/alcotest": "*",
+    "@opam/core_bench": "*",
+    "@opam/core": "*",
     "@opam/nocrypto": "*",
     "@opam/hex": "*",
     "@opam/cstruct": "*",
