@@ -1,29 +1,28 @@
 {
-  "name": "hello-reason",
+  "name": "merkle-trees",
   "version": "0.1.0",
-  "description": "Example Reason Esy Project",
+  "description": "Optimized Merkle Tree algorithm for traversal/verification and path computation",
   "license": "MIT",
   "esy": {
     "build": "refmterr dune build -p #{self.name}",
-    "NOTE": "Optional release Section. Customizes result of `esy release`",
     "release": {
-      "bin": [
-        "Hello"
-      ]
+      "bin": []
     },
     "buildEnv": {
-      "ODOC_SYNTAX": "re"
+      "ODOC_SYNTAX": "re",
+      "ALCOTEST_VERBOSE": "0",
+      "ALCOTEST_SHOW_ERRORS": "0",
+      "ALCOTEST_QUICK_TESTS": "0"
     }
   },
   "scripts": {
-    "test": "esy x Hello",
-    "doc": "esy dune build @doc"
+    "clean": "esy dune clean",
+    "test": "esy dune runtest --force --no-buffer -j 1",
+    "doc": "esy dune build @doc",
+    "open-doc": "gnome-open '#{self.target_dir}/default/_doc/_html/index.html'"
   },
   "dependencies": {
     "@opam/dune": "*",
-    "@reason-native/console": "*",
-    "@reason-native/pastel": "*",
-    "@reason-native/rely": "*",
     "@esy-ocaml/reason": ">= 3.4.0 < 3.6.0",
     "refmterr": "*",
     "ocaml": "~4.8.1000"
@@ -31,6 +30,11 @@
   "devDependencies": {
     "@opam/merlin": "*",
     "ocaml": "~4.8.1000",
+    "@opam/alcotest": "*",
+    "@opam/nocrypto": "*",
+    "@opam/hex": "*",
+    "@opam/cstruct": "*",
+    "@opam/zarith": "*",
     "@opam/odoc": "*"
   }
 }

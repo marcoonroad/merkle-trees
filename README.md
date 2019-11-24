@@ -1,11 +1,8 @@
-# hello-reason
+# merkle-trees
 
-[![Build Status](https://dev.azure.com/esy-ocaml/esy-ocaml/_apis/build/status/esy-ocaml.hello-reason?branchName=master)](https://dev.azure.com/esy-ocaml/esy-ocaml/_build/latest?definitionId=1?branchName=master)
+Optimized Merkle Tree algorithm for traversal/verification and path computation.
 
-A project which demonstrates a Reason workflow with [Esy][].
-
-[Esy]: https://github.com/esy-ocaml/esy
-
+[esy]: https://github.com/esy-ocaml/esy
 
 ## Usage
 
@@ -46,7 +43,6 @@ Shell into environment:
 
     % esy shell
 
-
 ## Create Prebuilt Release:
 
 `esy` allows creating prebuilt binary packages for your current platform, with
@@ -57,13 +53,14 @@ no dependencies.
     % npm publish
 
 ## Continuous Integration:
-`hello-reason` includes CI configuration for Azure
+
+`merkle-trees` includes CI configuration for Azure
 [DevOps](https://dev.azure.com) pipelines out of the box.
 
 - Create your Azure DevOps account.
 - Add a new project, and point that new Azure DevOps project to your github
   repo that includes the CI (`./azure-pipelines.yml` and the `.ci/` directory)
-  from `hello-reason`.
+  from `merkle-trees`.
 - Create a new Pipeline within that project.
   - When asked how to configure the new pipeline, select the option to use
     existing configuration inside the repo.

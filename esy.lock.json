@@ -1,6 +1,6 @@
 {
   "hash": "6378451500e4038bd21ae3119eb77f1e",
-  "root": "hello-reason@path:.",
+  "root": "merkle-trees@path:.",
   "node": {
     "refmterr@3.1.7": {
       "record": {
@@ -27,9 +27,9 @@
       },
       "dependencies": []
     },
-    "hello-reason@path:.": {
+    "merkle-trees@path:.": {
       "record": {
-        "name": "hello-reason",
+        "name": "merkle-trees",
         "version": "path:.",
         "source": "path:.",
         "files": [],
