@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "description": "Optimized Merkle Tree algorithm for traversal/verification and path computation",
   "license": "MIT",
+  "keywords": ["cryptography"],
+  "homepage": "https://github.com/marcoonroad/merkle-trees",
+  "repository": "git+https://github.com/marcoonroad/merkle-trees.git",
+  "bugs": "https://github.com/marcoonroad/merkle-trees/issues",
   "esy": {
     "build": "refmterr dune build -p #{self.name}",
     "release": {
