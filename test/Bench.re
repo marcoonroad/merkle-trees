@@ -15,7 +15,7 @@ let generate = height => {
   let case = () => {
     ignore(Merkle.tree(leaves));
   };
-  let name = "tree-generation:sha256 | height = " ++ string_of_int(height);
+  let name = "merkle-trees tree generation (sha256 / h = " ++ string_of_int(height) ++ ")";
   Test.create(case, ~name);
 };
 
@@ -28,7 +28,7 @@ let compute = height => {
   let case = () => {
     ignore(Merkle.path(~tree, ~leaf));
   };
-  let name = "path-computation:sha256 | height = " ++ string_of_int(height);
+  let name = "merkle-trees path computation (sha256 / h = " ++ string_of_int(height) ++ ")";
   Test.create(case, ~name);
 };
 
@@ -43,7 +43,7 @@ let verify = height => {
   let case = () => {
     assert(Merkle.verify(~root, ~leaf, ~path));
   };
-  let name = "path-verification:sha256 | height = " ++ string_of_int(height);
+  let name = "merkle-trees path verification (sha256 / h = " ++ string_of_int(height) ++ ")";
   Test.create(case, ~name);
 };
 

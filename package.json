@@ -23,6 +23,8 @@
     "clean": "esy dune clean",
     "lint-fmt": "esy dune build @fmt",
     "fmt": "esy dune build @fmt --auto-promote",
+    "bench": "esy x Bench -all-values -no-compactions -overheads -stabilize-gc -v",
+    "postbench": "mkdir -p bench-data && mv merkle-trees*.txt bench-data/",
     "test": "esy dune runtest --force --no-buffer -j 1",
     "doc": "esy dune build @doc",
     "open-doc": "gnome-open '#{self.target_dir}/default/_doc/_html/index.html'"
