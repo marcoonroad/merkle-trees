@@ -13,10 +13,7 @@
       "bin": []
     },
     "buildEnv": {
-      "ODOC_SYNTAX": "re",
-      "ALCOTEST_VERBOSE": "0",
-      "ALCOTEST_SHOW_ERRORS": "0",
-      "ALCOTEST_QUICK_TESTS": "0"
+      "ODOC_SYNTAX": "re"
     }
   },
   "scripts": {
