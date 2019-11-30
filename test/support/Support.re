@@ -5,8 +5,8 @@ module type IHash = {
   let digest: string => string;
 };
 
-module SHA256 : IHash = {
-  let name = "SHA256"
+module SHA256: IHash = {
+  let name = "SHA256";
   let digest = message => {
     message
     |> Cstruct.of_string
@@ -15,12 +15,10 @@ module SHA256 : IHash = {
   };
 };
 
-module Blake2B : IHash = {
-  let name = "Blake2B"
+module Blake2B: IHash = {
+  let name = "Blake2B";
   let digest = message => {
-    message
-    |> Digestif.BLAKE2B.digest_string
-    |> Digestif.BLAKE2B.to_raw_string
+    message |> Digestif.BLAKE2B.digest_string |> Digestif.BLAKE2B.to_raw_string;
   };
 };
 

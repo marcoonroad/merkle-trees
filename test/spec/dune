@@ -2,4 +2,5 @@
  (name Spec)
  (modules Spec)
  (libraries alcotest Support)
- (action (run %{test} -e)))
+ (action
+  (run %{test} -e)))

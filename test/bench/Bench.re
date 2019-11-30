@@ -8,7 +8,7 @@ let power_of_two = number => {
   int_of_float(2.0 ** float_of_int(number));
 };
 
-module MerkleBench = (Hash : Support.IHash) => {
+module MerkleBench = (Hash: Support.IHash) => {
   module Merkle = MerkleTrees.Make(Hash);
 
   let generate = height => {
@@ -17,7 +17,12 @@ module MerkleBench = (Hash : Support.IHash) => {
     let case = () => {
       ignore(Merkle.tree(leaves));
     };
-    let name = "merkle-trees tree generation (" ++ Hash.name ++ " / h = " ++ string_of_int(height) ++ ")";
+    let name =
+      "merkle-trees tree generation ("
+      ++ Hash.name
+      ++ " / h = "
+      ++ string_of_int(height)
+      ++ ")";
     Test.create(case, ~name);
   };
 
@@ -30,7 +35,12 @@ module MerkleBench = (Hash : Support.IHash) => {
     let case = () => {
       ignore(Merkle.path(~tree, ~leaf));
     };
-    let name = "merkle-trees path computation (" ++ Hash.name ++ " / h = " ++ string_of_int(height) ++ ")";
+    let name =
+      "merkle-trees path computation ("
+      ++ Hash.name
+      ++ " / h = "
+      ++ string_of_int(height)
+      ++ ")";
     Test.create(case, ~name);
   };
 
@@ -45,7 +55,12 @@ module MerkleBench = (Hash : Support.IHash) => {
     let case = () => {
       assert(Merkle.verify(~root, ~leaf, ~path));
     };
-    let name = "merkle-trees path verification (" ++ Hash.name ++ " / h = " ++ string_of_int(height) ++ ")";
+    let name =
+      "merkle-trees path verification ("
+      ++ Hash.name
+      ++ " / h = "
+      ++ string_of_int(height)
+      ++ ")";
     Test.create(case, ~name);
   };
 
@@ -58,8 +73,11 @@ module SHA256Bench = MerkleBench(Support.SHA256);
 module Blake2BBench = MerkleBench(Support.Blake2B);
 
 let suite =
-  SHA256Bench.generations @ Blake2BBench.generations @
-  SHA256Bench.computations @ Blake2BBench.computations @
-  SHA256Bench.verifications @ Blake2BBench.verifications;
+  SHA256Bench.generations
+  @ Blake2BBench.generations
+  @ SHA256Bench.computations
+  @ Blake2BBench.computations
+  @ SHA256Bench.verifications
+  @ Blake2BBench.verifications;
 
 Command.run(make_command(suite));

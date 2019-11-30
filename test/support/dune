@@ -1,5 +1,5 @@
 (library
  (name Support)
  (modules Support)
- (libraries merkle-trees nocrypto nocrypto.unix digestif digestif.c zarith hex cstruct))
-
+ (libraries merkle-trees nocrypto nocrypto.unix digestif digestif.c zarith
+   hex cstruct))

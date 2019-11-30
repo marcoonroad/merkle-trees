@@ -1,1 +1,2 @@
-(dirs (:standard \ node_modules \ _esy \ TRASH))
+(dirs
+ (:standard \ node_modules \ _esy \ TRASH))
