@@ -16,7 +16,7 @@ module type IMerkleTree = {
 
 module type IHash = {let digest: string => string;};
 
-module type ITreeBuilder = (Hash: IHash) => {include IMerkleTree;};
+module type ITreeBuilder = (Hash: IHash) => IMerkleTree;
 
 module Make: ITreeBuilder =
   (Hash: IHash) => {

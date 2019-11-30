@@ -37,6 +37,7 @@
     "@opam/alcotest": "*",
     "@opam/core_bench": "*",
     "@opam/core": "*",
+    "@opam/digestif": "*",
     "@opam/nocrypto": "*",
     "@opam/hex": "*",
     "@opam/cstruct": "*",

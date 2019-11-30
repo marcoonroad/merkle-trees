@@ -1,11 +1,26 @@
 /* helper library for test suite */
 
-module Hash = {
+module type IHash = {
+  let name: string;
+  let digest: string => string;
+};
+
+module SHA256 : IHash = {
+  let name = "SHA256"
   let digest = message => {
     message
     |> Cstruct.of_string
     |> Nocrypto.Hash.SHA256.digest
     |> Cstruct.to_string;
+  };
+};
+
+module Blake2B : IHash = {
+  let name = "Blake2B"
+  let digest = message => {
+    message
+    |> Digestif.BLAKE2B.digest_string
+    |> Digestif.BLAKE2B.to_raw_string
   };
 };
 
@@ -47,6 +62,6 @@ module PRNG: IPRNG = {
   };
 };
 
-module MerkleTree = MerkleTrees.Make(Hash);
+module MerkleTree = MerkleTrees.Make(SHA256);
 
 Nocrypto_entropy_unix.initialize();
