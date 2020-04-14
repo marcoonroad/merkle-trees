@@ -12,9 +12,7 @@
     "release": {
       "bin": []
     },
-    "buildEnv": {
-      "ODOC_SYNTAX": "re"
-    }
+    "buildEnv": {}
   },
   "scripts": {
     "clean": "esy dune clean",
