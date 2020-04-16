@@ -42,13 +42,16 @@ module Make: ITreeBuilder =
 
     let __hash_leaf = leaf => {
       /*
-      let image1 = digest(leaf);
-      let image2 = digest(image1);
-      let image3 = image1 ++ image2;
-      let image4 = digest(image3);
-      image4;
-      */
-      mac(~key="LEAF", ~data=leaf);
+       let image1 = digest(leaf);
+       let image2 = digest(image1);
+       let image3 = image1 ++ image2;
+       let image4 = digest(image3);
+       image4;
+       */
+      mac(
+        ~key="LEAF",
+        ~data=leaf,
+      );
     };
 
     let __hash_node = (left, right) => {
