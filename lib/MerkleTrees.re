@@ -29,13 +29,26 @@ module Make: ITreeBuilder =
 
     let _HASH_LENGTH = String.length @@ digest("Hello, World!");
     let _NULL_HASH = String.make(_HASH_LENGTH) @@ Char.chr(0);
+    let _OPAD = String.make(_HASH_LENGTH) @@ Char.chr(0x5c);
+    let _IPAD = String.make(_HASH_LENGTH) @@ Char.chr(0x36);
+
+    let rec mac = (~key, ~data) => {
+      let secret = digest(key);
+      let ikey = Helpers.Crypto.xor_string(secret, _IPAD);
+      let okey = Helpers.Crypto.xor_string(secret, _OPAD);
+      let inner = digest(ikey ++ data);
+      digest(okey ++ inner);
+    };
 
     let __hash_leaf = leaf => {
+      /*
       let image1 = digest(leaf);
       let image2 = digest(image1);
-      let image3 = /* Crypto.xor_string(image1, image2) */ image1 ++ image2;
+      let image3 = image1 ++ image2;
       let image4 = digest(image3);
       image4;
+      */
+      mac(~key="LEAF", ~data=leaf);
     };
 
     let __hash_node = (left, right) => {
@@ -69,13 +82,13 @@ module Make: ITreeBuilder =
 
     let __compute_root =
       fun
-      | [] => digest("")
-      | [root] => digest(root)
-      | nodes => digest @@ List.nth(__merkle(nodes), 0);
+      | [] => Hash.digest("")
+      | [root] => Hash.digest(root)
+      | nodes => Hash.digest @@ List.nth(__merkle(nodes), 0);
 
     let tree = values => {
       let leaves = List.map(__hash_leaf, values);
-      let root = __compute_root(leaves);
+      let root = Helpers.Hex.encode(__compute_root(leaves));
       {leaves, root};
     };
 
@@ -118,13 +131,15 @@ module Make: ITreeBuilder =
     let path = (~tree as {leaves, _}, ~leaf) => {
       let image = __hash_leaf(leaf);
       let index = __find_position(image, 0, leaves);
-      __compute_path([], index, leaves);
+      let path = __compute_path([], index, leaves);
+      List.map(Helpers.Hex.encode, path);
     };
 
     let verify = (~root, ~leaf, ~path) => {
+      let proof = List.map(Helpers.Hex.decode, path);
       let image = __hash_leaf(leaf);
-      let traversal = List.fold_left(__hash_node, image, path);
-      root == Hash.digest(traversal);
+      let traversal = List.fold_left(__hash_node, image, proof);
+      root == Helpers.Hex.encode(Hash.digest(traversal));
     };
   };
 
