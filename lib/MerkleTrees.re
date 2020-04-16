@@ -14,7 +14,6 @@ module type IMerkleTree = {
   /** Retrieves the Root Hash of Merkle Tree for verification. Runs in O(1) complexity. */
   let root: tree => string;
 
-
   /**
     Generates a proof-of-inclusion through a list of hashes known as the
     Authentication Path.
@@ -160,4 +159,3 @@ module Make: ITreeBuilder =
   have been warned.
 */
 module Helpers = Helpers;
-
