@@ -29,11 +29,11 @@
     "@opam/dune": "*",
     "@esy-ocaml/reason": ">= 3.4.0 < 3.6.0",
     "refmterr": "*",
-    "ocaml": "~4.8.1000"
+    "ocaml": "~4.10.0"
   },
   "devDependencies": {
     "@opam/merlin": "*",
-    "ocaml": "~4.8.1000",
+    "ocaml": "~4.10.0",
     "@opam/alcotest": "*",
     "@opam/core_bench": "*",
     "@opam/core": "*",
