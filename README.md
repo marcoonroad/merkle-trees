@@ -1,73 +1,34 @@
 # merkle-trees
 
-Optimized Merkle Tree algorithm for traversal/verification and path computation.
+Optimized Merkle Tree algorithm for traversal/verification and path computation. [Work In Progress]
 
-[esy]: https://github.com/esy-ocaml/esy
+[![Build Status](https://dev.azure.com/marcoonroad/marcoonroad/_apis/build/status/marcoonroad.merkle-trees?branchName=stable)](https://dev.azure.com/marcoonroad/marcoonroad/_build/latest?definitionId=3&branchName=stable)
 
-## Usage
+## API
 
-You need Esy, you can install the beta using [npm](https://npmjs.com):
+This library is generic over the underlying used hash algorithm. Once the hash is provided, the main functor will return a merkle tree algorithm. The interface for such returned merkle tree module follows below:
 
-    % npm install -g esy@latest
+```ocaml
+type tree
+```
+The abstract data type of Merkle Tree instance.
 
-> NOTE: Make sure `esy --version` returns at least `0.5.4` for this project to build.
+```ocaml
+val tree : string list -> tree
+```
+Computes a Merkle Tree instance given a list of leaves. This list can be of any size, but sizes such as 2.0 ** 20.0 break the runtime with stack overflow exceptions. This operation, so, is unfeasible on huge values, even if we rewrite the implementation to avoid stack overflows.
 
-Then run the `esy` command from this project root to install and build dependencies.
+```ocaml
+val root : tree -> string
+```
+Retrieves the Root Hash of Merkle Tree for verification. Runs in O(1) complexity.
 
-    % esy
+```ocaml
+val path : tree:tree -> leaf:string -> string list
+```
+Generates a proof-of-inclusion through a list of hashes known as the Authentication Path.
 
-Now you can run your editor within the environment (which also includes merlin):
-
-    % esy $EDITOR
-    % esy vim
-
-Alternatively you can try [vim-reasonml](https://github.com/jordwalke/vim-reasonml)
-which loads esy project environments automatically.
-
-After you make some changes to source code, you can re-run project's build
-again with the same simple `esy` command.
-
-    % esy
-
-And test compiled executable (runs `scripts.tests` specified in
-`package.json`):
-
-    % esy test
-
-Documentation for the libraries in the project can be generated with:
-
-    % esy doc
-    % esy open '#{self.target_dir}/default/_doc/_html/index.html'
-
-Shell into environment:
-
-    % esy shell
-
-## Create Prebuilt Release:
-
-`esy` allows creating prebuilt binary packages for your current platform, with
-no dependencies.
-
-    % esy npm-release
-    % cd _release
-    % npm publish
-
-## Continuous Integration:
-
-`merkle-trees` includes CI configuration for Azure
-[DevOps](https://dev.azure.com) pipelines out of the box.
-
-- Create your Azure DevOps account.
-- Add a new project, and point that new Azure DevOps project to your github
-  repo that includes the CI (`./azure-pipelines.yml` and the `.ci/` directory)
-  from `merkle-trees`.
-- Create a new Pipeline within that project.
-  - When asked how to configure the new pipeline, select the option to use
-    existing configuration inside the repo.
-
-The CI is configured to build caches on the `master` branch, and also any
-branch named one of (`global`, `release-*`, `releases-*`). That means that pull
-requests to any branch with those names will be fast, once you have landed at
-least one commit to that branch. The first time you submit a pull request to
-one of those branches, the builds will be slow but then subsequent pull
-requests will be faster once a pull request is merged to it.
+```ocaml
+val verify : root:string -> leaf:string -> path:string list -> bool
+```
+Verifies the proof-of-inclusion of the leaf for given Merkle Tree Root Hash.

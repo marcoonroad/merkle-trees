@@ -25,7 +25,7 @@
     "bench": "esy dune build @test/bench/runtest --no-buffer -j 1 --auto-promote",
     "test": "esy dune build @test/spec/runtest -f --no-buffer -j 1",
     "doc": "esy dune build @doc",
-    "open-doc": "gnome-open '#{self.target_dir}/default/_doc/_html/index.html'"
+    "open-doc": "gnome-open './_build/default/_doc/_html/index.html'"
   },
   "dependencies": {
     "@opam/dune": "*",
