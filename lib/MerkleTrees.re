@@ -15,16 +15,15 @@ module Make: Interfaces.ITreeBuilder =
       root: string,
     };
 
-    type direction = L | R;
+    type direction =
+      | L
+      | R;
 
     module Hmac = Crypto.Mac(Hash);
     open Hmac;
 
     let __hash_leaf = leaf => {
-      mac(
-        ~key="LEAF",
-        ~data=leaf,
-      );
+      mac(~key="LEAF", ~data=leaf);
     };
 
     let __hash_node = (left, right) => {
@@ -112,22 +111,25 @@ module Make: Interfaces.ITreeBuilder =
       let image = __hash_leaf(leaf);
       let index = __find_position(image, 0, leaves);
       let path = __compute_path([], index, leaves);
-      if(List.length(path) > 0) {
+      if (List.length(path) > 0) {
         path;
       } else {
-        failwith("Could not compute an existing authentication path!")
-        /* list; */
-      }
+        failwith("Could not compute an existing authentication path!");
+      };
     };
 
     let __decode_node = node => {
       let chars = String.to_list(node);
       let direction =
         switch (List.hd(chars)) {
-        | 'L' => L;
-        | 'R' => R;
+        | 'L' => L
+        | 'R' => R
         | chr =>
-          failwith("Invalid path node, could not decode direction (" ++ Char.escaped(chr) ++ ")!");
+          failwith(
+            "Invalid path node, could not decode direction ("
+            ++ Char.escaped(chr)
+            ++ ")!",
+          )
         };
       let hash = Hex.decode @@ String.of_list @@ List.tl(chars);
       (direction, hash);
@@ -136,15 +138,16 @@ module Make: Interfaces.ITreeBuilder =
     let __hash_path_node = (current, node) => {
       let (direction, hash) = __decode_node(node);
       switch (direction) {
-      | L => digest(hash ++ current);
-      | R => digest(current ++ hash);
+      | L => digest(hash ++ current)
+      | R => digest(current ++ hash)
       };
     };
 
     let rec __fold_ordered = (current, path) => {
-      switch(path) {
-      | [] => current;
-      | [node, ...rest] => __fold_ordered(__hash_path_node(current, node), rest)
+      switch (path) {
+      | [] => current
+      | [node, ...rest] =>
+        __fold_ordered(__hash_path_node(current, node), rest)
       };
     };
 
