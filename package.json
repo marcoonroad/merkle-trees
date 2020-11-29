@@ -17,6 +17,8 @@
     }
   },
   "scripts": {
+    "build": "esy",
+    "postbuild": "esy dune build",
     "clean": "esy dune clean",
     "lint-fmt": "esy dune build @fmt",
     "fmt": "esy dune build @fmt --auto-promote",
