@@ -1,78 +1,26 @@
-/** The interface for Merkle Tree operations. */
-module type IMerkleTree = {
-  /** The abstract data type of Merkle Tree instance. */
-  type tree;
-
-  /**
-    Computes a Merkle Tree instance given a list of leaves. This list can be of any size,
-    but sizes such as [2.0 ** 20.0] break the runtime with stack overflow exceptions. This
-    operation, so, is unfeasible on huge values, even if we rewrite the implementation to
-    avoid stack overflows.
-  */
-  let tree: list(string) => tree;
-
-  /** Retrieves the Root Hash of Merkle Tree for verification. Runs in O(1) complexity. */
-  let root: tree => string;
-
-  /**
-    Generates a proof-of-inclusion through a list of hashes known as the
-    Authentication Path.
-  */
-  let path: (~tree: tree, ~leaf: string) => list(string);
-
-  /** Verifies the proof-of-inclusion of the leaf for given Merkle Tree Root Hash. */
-  let verify: (~root: string, ~leaf: string, ~path: list(string)) => bool;
-};
-
-/** The contract for Merkle Tree's underlying parametric hash algorithm. */
-module type IHash = {
-  /**
-    The hash function. It's recommended for the output be under binary/ASCII
-    mode instead of hexadecimals, otherwise, bogus behavior could happen 'cause
-    this library uses the binary output assumption in many places.
-  */
-  let digest: string => string;
-};
-
-/** The interface for abstract Merkle Tree algorithm. */
-module type ITreeBuilder = (Hash: IHash) => IMerkleTree;
+module Hex = Helpers.Hex;
+module List = Helpers.List;
+module String = Helpers.String;
 
 /**
- This functor provides only an abstract Merkle Tree
+  This functor provides only an abstract Merkle Tree
  algorithm ready to be instanced with given hash
  function (recommended digest sizes are at least
  256-bits).
 */
-module Make: ITreeBuilder =
-  (Hash: IHash) => {
+module Make: Interfaces.ITreeBuilder =
+  (Hash: Interfaces.IHash) => {
     type tree = {
       leaves: list(string),
       root: string,
     };
 
-    let digest = Hash.digest;
+    type direction = L | R;
 
-    let _HASH_LENGTH = String.length @@ digest("Hello, World!");
-    let _NULL_HASH = String.make(_HASH_LENGTH) @@ Char.chr(0);
-    let _OPAD = String.make(_HASH_LENGTH) @@ Char.chr(0x5c);
-    let _IPAD = String.make(_HASH_LENGTH) @@ Char.chr(0x36);
-
-    let rec mac = (~key, ~data) => {
-      let secret = digest(key);
-      let ikey = Helpers.Crypto.xor_string(secret, _IPAD);
-      let okey = Helpers.Crypto.xor_string(secret, _OPAD);
-      let inner = digest(ikey ++ data);
-      digest(okey ++ inner);
-    };
+    module Hmac = Crypto.Mac(Hash);
+    open Hmac;
 
     let __hash_leaf = leaf => {
-      /*
-       let image1 = digest(leaf);
-       let image2 = digest(image1);
-       let image3 = image1 ++ image2;
-       let image4 = digest(image3);
-       image4;
-       */
       mac(
         ~key="LEAF",
         ~data=leaf,
@@ -80,9 +28,7 @@ module Make: ITreeBuilder =
     };
 
     let __hash_node = (left, right) => {
-      let fst = min(left, right);
-      let snd = max(left, right);
-      digest(fst ++ snd);
+      digest(left ++ right);
     };
 
     let __get_nth = (list, index) =>
@@ -102,9 +48,9 @@ module Make: ITreeBuilder =
       if (len <= 1) {
         list;
       } else if (len mod 2 == 0) {
-        __merkle @@ Helpers.List.init(~f=__boot(list), ~len=len / 2);
+        __merkle @@ List.init(~f=__boot(list), ~len=len / 2);
       } else {
-        __merkle @@ Helpers.List.init(~f=__boot(list), ~len=len / 2 + 1);
+        __merkle @@ List.init(~f=__boot(list), ~len=len / 2 + 1);
       };
     };
 
@@ -116,7 +62,7 @@ module Make: ITreeBuilder =
 
     let tree = values => {
       let leaves = List.map(__hash_leaf, values);
-      let root = Helpers.Hex.encode(__compute_root(leaves));
+      let root = Hex.encode(__compute_root(leaves));
       {leaves, root};
     };
 
@@ -150,9 +96,15 @@ module Make: ITreeBuilder =
             } else {
               length / 2 + 1;
             };
-          let node = __get_nth(list, index');
-          let path' = [node, ...path];
-          let list' = Helpers.List.init(~f=__boot(list), ~len=length');
+          let prefix' =
+            if (index' mod 2 == 0) {
+              "L";
+            } else {
+              "R";
+            };
+          let node = __get_nth(list, index'); /* get sibling node of current hash node*/
+          let path' = [prefix' ++ Hex.encode(node), ...path];
+          let list' = List.init(~f=__boot(list), ~len=length');
           __compute_path(path', index / 2, list');
         };
 
@@ -160,19 +112,54 @@ module Make: ITreeBuilder =
       let image = __hash_leaf(leaf);
       let index = __find_position(image, 0, leaves);
       let path = __compute_path([], index, leaves);
-      List.map(Helpers.Hex.encode, path);
+      if(List.length(path) > 0) {
+        path;
+      } else {
+        failwith("Could not compute an existing authentication path!")
+        /* list; */
+      }
+    };
+
+    let __decode_node = node => {
+      let chars = String.to_list(node);
+      let direction =
+        switch (List.hd(chars)) {
+        | 'L' => L;
+        | 'R' => R;
+        | chr =>
+          failwith("Invalid path node, could not decode direction (" ++ Char.escaped(chr) ++ ")!");
+        };
+      let hash = Hex.decode @@ String.of_list @@ List.tl(chars);
+      (direction, hash);
+    };
+
+    let __hash_path_node = (current, node) => {
+      let (direction, hash) = __decode_node(node);
+      switch (direction) {
+      | L => digest(hash ++ current);
+      | R => digest(current ++ hash);
+      };
+    };
+
+    let rec __fold_ordered = (current, path) => {
+      switch(path) {
+      | [] => current;
+      | [node, ...rest] => __fold_ordered(__hash_path_node(current, node), rest)
+      };
+    };
+
+    let rec __ordered_traversal = (root, image, path) => {
+      root == Hex.encode(Hash.digest(__fold_ordered(image, path)));
     };
 
     let verify = (~root, ~leaf, ~path) => {
-      let proof = List.map(Helpers.Hex.decode, path);
       let image = __hash_leaf(leaf);
-      let traversal = List.fold_left(__hash_node, image, proof);
-      root == Helpers.Hex.encode(Hash.digest(traversal));
+      __ordered_traversal(root, image, path);
     };
   };
 
 /**
-  WARNING: Helper function used only for internal purposes. Don't rely on
+   WARNING: Helper function used only for internal purposes. Don't rely on
   it, it's prone to have a broken API and even to be removed entirely. You
   have been warned.
 */

@@ -38,12 +38,7 @@ module String = {
   };
 };
 
-module type IHex = {
-  let encode: string => string;
-  let decode: string => string;
-};
-
-module Hex: IHex = {
+module Hex: Interfaces.IHex = {
   let table = [
     '0',
     '1',
@@ -120,20 +115,5 @@ module Hex: IHex = {
       let bytes = List.init(~f, ~len=len / 2);
       List.reduce(~f=(++), bytes);
     };
-  };
-};
-
-module Crypto = {
-  let xor_char = (left, right) => {
-    let left_code = Char.code(left);
-    let right_code = Char.code(right);
-    Char.chr(left_code lxor right_code);
-  };
-
-  let xor_string = (left, right) => {
-    let left_list = String.to_list(left);
-    let right_list = String.to_list(right);
-    let xor_list = List.map2(xor_char, left_list, right_list);
-    String.of_list(xor_list);
   };
 };

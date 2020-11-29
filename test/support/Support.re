@@ -66,6 +66,19 @@ module PRNG: IPRNG = {
   };
 };
 
+let __random_direction_prefix = node => {
+  if(PRNG.random_int(1) == 1) {
+    "R" ++ node;
+  } else {
+    "L" ++ node;
+  }
+};
+
+let list_of_random_path_nodes = length => {
+  let images = PRNG.list_of_random_images(length);
+  List.map(__random_direction_prefix, images);
+};
+
 module MerkleTree = MerkleTrees.Make(SHA256);
 
 Nocrypto_entropy_unix.initialize();
