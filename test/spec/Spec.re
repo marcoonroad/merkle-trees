@@ -40,7 +40,7 @@ let __deterministic_verification = () => {
   let leaf = List.nth(_FST_SET, index);
   let path = MerkleTree.path(~tree, ~leaf);
   let noise_leaf = PRNG.random_different_256_bits(leaf);
-  let noise_path = PRNG.list_of_random_256_bits(PRNG.random_int(6));
+  let noise_path = Support.list_of_random_path_nodes(PRNG.random_int(6));
   let other_index = (index + 1) mod _LENGTH;
   let other_leaf = List.nth(_FST_SET, other_index);
   let other_path = MerkleTree.path(~tree, ~leaf=other_leaf);

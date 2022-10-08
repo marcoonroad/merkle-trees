@@ -3,6 +3,17 @@ name: NPM/Esy CI (install, build and test)
 trigger:
 - stable
 - development
+- release
+- ft/*
+- feat/*
+- feature/*
+- refactor/*
+- fix/*
+- bugfix/*
+- chore/*
+- style/*
+- epic/*
+- snyk-upgrade-*
 
 pool:
   vmImage: 'ubuntu-latest'
